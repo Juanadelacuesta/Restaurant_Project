@@ -1,0 +1,26 @@
+<!--from flask import Flask, url_for-->
+
+<html>
+
+<body>
+
+<h1>Menu Items</h1>
+
+<a href={{(url_for('AddMenuItem'))}}>Add new Item</a>
+
+{% for i in items %}
+
+<div>
+
+<p><strong>{{i.name}}</strong></p>
+
+<p>Description: {{i.description}}</p>
+
+<p>Price: {{i.price}} </p>
+</br>
+</div>
+
+{% endfor %}
+</body>
+
+</html>
