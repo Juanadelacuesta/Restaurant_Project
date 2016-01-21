@@ -17,7 +17,15 @@
 <p>Description: {{i.description}}</p>
 
 <p>Price: {{i.price}} </p>
+
+<form method='POST' enctype='multipart/form-data' action="{{url_for('index')}}">
+     
+<input type='submit' value='Delete'>
+<input type='hidden' name='id' value={{i.id}}>
+
+</form>
 </br>
+
 </div>
 
 {% endfor %}

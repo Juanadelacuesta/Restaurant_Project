@@ -1,3 +1,5 @@
+<!--from flask import Flask, render_template, url_for-->
+
 <html>
 
 <body>
@@ -8,34 +10,31 @@
 
 <h2>Enter information to create a new menu item</h2>
 
-<form method='POST' enctype='multipart/form-data' action='/restaurant/newMenuItem'>
+<form method='POST' enctype='multipart/form-data' 
+action="{{url_for('AddMenuItem')}}">
 
-Name: <input name='name' type='text'></br>
-Course: <input name='course' type='text'> </br>
-Description: <input name='description' type='text'></br>
-Price: <input name ='price' type='text'> </br>
+Name: <input name='name' type='text'>
+</br>
+Course: <input name='course' type='text'>
+</br>
+Description: <input name='description' type='text'>
+</br>
+Price: <input name ='price' type='text'>
+</br>
 Restaurant: <select name='restaurant_id'>
 
-{% for r in restaurant %}
-    
-    <option value={{r.id}}> {{r.name}}</option>"  
-
+{% for r in restaurants %}  
+    <option value={{r.id}}> {{r.name}}</option>
     </br>
 {%endfor%}
 
-</select>"
+</select>
 </br>
-</br><input type='submit' value='Save'> </p>
-</form>"
+</br><input type='submit' value='Save Item'> </p>
+</form>
 
 </div>
 
 </body>
 
 </html> 
-
-
- output = ''
-    output += '<h1> New Menu Item</h2> '
-    output += 
-    return output

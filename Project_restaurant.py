@@ -2,18 +2,26 @@ import cgi
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, engine
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 app = Flask(__name__)
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
             
-@app.route('/')
-@app.route('/restaurants/')
+@app.route('/', methods = ['GET','POST'])
+@app.route('/restaurants/', methods = ['GET','POST'])
 def index():
+
     items = session.query(MenuItem).all()
-    return render_template('menuItems.html', items=items)
+    if request.method == 'GET':
+        return render_template('menuItems.html', items=items)
+    elif request.method == 'POST':
+        item_to_delete = (session.query(MenuItem).
+                            filter(MenuItem.id==request.form['id']).one())
+        session.delete(item_to_delete)
+        session.commit()
+        return redirect(url_for('index'))
     
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
@@ -22,57 +30,62 @@ def restaurantMenu(restaurant_id):
     return render_template('menu.html', restaurant=restaurant, items=items)
 
 # Task 1: Create route for newMenuItem function here
-@app.route('/restaurants/newMenuItem/')
+@app.route('/restaurants/newMenuItem/', methods=['GET','POST'])
 def AddMenuItem():
-    output = ''
-    output += '<h1> New Menu Item</h2> '
-    output += "<form method='POST' enctype='multipart/form-data' \
-        action='/restaurant/newMenuItem'>\
-        <h2>Enter information to create a new menu item</h2>\
-        <p>\
-        Name: <input name='name' type='text'></br>\
-        Course: <input name='course' type='text'> </br>\
-        Description: <input name='description' type='text'></br>\
-        Price: <input name ='price' type='text'> </br>\
-        Restaurant: <select name='restaurant_id'>"
-    for restaurant in session.query(Restaurant).all():
-        output += ("<option value='%s'> %s </option>"  
-            % (restaurant.id, restaurant.name))
-    output += "</br></select>"
-    output += "</br></br><input type='submit' value='Save'> </p>\
-        </form>"
-    return output
+    restaurants = session.query(Restaurant).all()
+    new_item = MenuItem()
+    if request.method == 'GET':
+        return render_template('newMenuItem.html', restaurants=restaurants)
+        
+    elif request.method == 'POST':
+        if request.form['name']:
+            new_item.name = request.form['name']
+        if request.form['course']:
+            new_item.course = request.form['course']
+        if request.form['description']:
+            new_item.description = request.form['description']
+        if request.form['price']:
+            new_item.price = request.form['price']
+        if request.form['restaurant_id']:
+            new_item.restaurant_id = request.form['restaurant_id']    
+        
+        session.add(new_item)
+        session.commit()
+        return redirect(url_for('index'))
 
-
-@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/')    
+@app.route('/restaurants/<int:restaurant_id>/<int:menuitem_id>/', 
+            methods = ['GET','POST'])    
 def editMenuItem(restaurant_id, menuitem_id):
-    print restaurant_id, menuitem_id
-    output = ''
     restaurant = (session.query(Restaurant).
         filter(Restaurant.id==restaurant_id).one())
     item = (session.query(MenuItem).
         filter(MenuItem.id==menuitem_id).one())
-      
-    output = ''
-    output += ("<form method='POST' enctype='multipart/form-data' \
-        action='/restaurant/'>\
-        <h2>Edit the item %s and add it to restaurant %s</h2>" 
-        % (item.name, restaurant.name))
-    output +=  ("Name: <input name='name' placeholder='%s' type='text'></br>\
-        Course: <input name='course' placeholder='%s' type='text'> </br>\
-        Description: <input name='desc' placeholder='%s' type='text'></br>\
-        Price: <input price='price' placeholder='%s' type='text'> </br>" %
-        (item.name, item.course, item.description, item.price))
-    output += "</br><input type='submit' value='Save and Add'>"
-    output += "</form>"   
-    return output
-
-
-@app.route('/restaurants/delete/<int:restaurant_id>/<int:menuitem_id>/')    
-def deleteMenuItem(restaurant_id, menuitem_id):
-    output = ''
-    output += "listo parce"
-    return output
+    if request.method == 'GET':
+        return render_template('editMenuItem.html', 
+                                restaurant=restaurant, item=item)
+                                
+    elif request.method == 'POST':
+        if request.form['name'] != item.name:
+            item.name = request.form['name']
+        if request.form['course'] != item.course:
+            item.course = request.form['course']
+        if request.form['description'] != item.description:
+            item.description = request.form['description']
+        if request.form['price'] != item.price:
+            print "price"
+            item.price = request.form['price']
+        if request.form['restaurant_id'] != item.restaurant_id:
+            item.restaurant_id = request.form['restaurant_id']   
+        session.commit()
+        return  "blah"
+        #redirect(url_for('restaurantMenu',restaurant_id=restaurant_id))
+   
+    
+@app.route('/restaurants/delete/<int:menuitem_id>/')    
+def deleteMenuItem(menuitem_id):
+    item = (session.query(MenuItem).
+        filter(MenuItem.id==menuitem_id).one())
+    return render_template('deleteMenuItem.html', item=item)
     
 if __name__ == '__main__':
     app.debug = True
