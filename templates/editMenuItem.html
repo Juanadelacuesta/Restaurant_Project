@@ -1,0 +1,33 @@
+<!--from flask import Flask, url_for-->
+
+<html>
+
+<body>
+
+<h1>Edit {{item.name}} from {{restaurant.name}}</h1>
+
+<form action={{url_for('editMenuItem', restaurant_id=restaurant.id,
+                            menuitem_id=item.id)}}
+method='POST'>
+
+<p>Name:</p> <input name='name' value={{item.name}} type='text'>
+
+<p>Course:</p> <input name='course' value={{item.course}} type='text'>
+
+<p>Description:</p> <input name='desc' value={{item.description}}  type='text'>
+
+<p>Price: </p> <input price='price' value={{item.price}}  type='text'>
+
+<input type='submit' value='Save changes'>
+
+</form>   
+
+<a href={{url_for('restaurantMenu', restaurant_id=restaurant.id)}}> Cancel </a>
+
+</body>
+
+</html>
+
+
+
+
