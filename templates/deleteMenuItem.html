@@ -1,7 +1,10 @@
 <!--from flask import Flask, render_template, url_for-->
 
 <html>
-
+<head>
+    <link rel="stylesheet" type="text/css" 
+        href="{{url_for('static', filename='style.css') }}">
+</head>
 <body>
 
 <h1>Delete {{item.name}}</h1>
@@ -14,7 +17,8 @@
 
 <p>Price: {{item.price}} </p>
 
-<form method='POST' enctype='multipart/form-data' action='url_for('index')'> 
+<form method='POST' enctype='multipart/form-data' 
+action="{{url_for('deleteMenuItem', menuitem_id=item.id)}}"> 
 
 <input type='submit' value='Delete'>
 
@@ -24,3 +28,5 @@
 </body>
 
 </html>
+
+<!--{{url_for('deleteMenuItem', menuitem_id=item.id)}}"-->

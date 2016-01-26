@@ -1,10 +1,23 @@
 <!--from flask import Flask, url_for-->
 
 <html>
+<head>
 
-<body>
-
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
 <h1>Menu Items</h1>
+<p>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+        <img source='http://cliparts.co/clipart/3269776' alt='*' 
+            style="width:30px;height:22px;"> {{ message }}
+
+    {% endfor %}
+  {% endif %}
+{%endwith%}
+</p>
 
 <a href={{(url_for('AddMenuItem'))}}>Add new Item</a>
 

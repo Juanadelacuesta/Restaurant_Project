@@ -1,6 +1,11 @@
 <!--from flask import Flask, render_template, url_for-->
 
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" 
+        href="{{url_for('static', filename='style.css')}}">
+
+</head>
 
 <body>
 
@@ -10,6 +15,7 @@
 
 <h2>Enter information to create a new menu item</h2>
 
+               
 <form method='POST' enctype='multipart/form-data' 
 action="{{url_for('AddMenuItem')}}">
 
@@ -24,9 +30,9 @@ Price: <input name ='price' type='text'>
 Restaurant: <select name='restaurant_id'>
 
 {% for r in restaurants %}  
-    <option value={{r.id}}> {{r.name}}</option>
+    <option value={{ r.id }}> {{ r.name }}</option>
     </br>
-{%endfor%}
+{% endfor %}
 
 </select>
 </br>

@@ -1,7 +1,10 @@
 <!--from flask import Flask, render_template, url_for-->
 
 <html>
-
+<head>
+    <link rel="stylesheet" type="text/css" 
+        href="{{url_for('static', filename='style.css')}}">
+</head>
 <body>
 
 <h1>{{restaurant.name}}</h1>
